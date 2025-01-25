@@ -1,0 +1,15 @@
+.custom-menu .ant-menu-item {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .custom-menu .ant-menu-item:hover {
+    background-color: #33333E !important; /* Change to your desired hover color */
+    color: #ffffff !important; /* Text color on hover */
+  }
+  
+  .custom-menu .ant-menu-item .anticon {
+    color: #ef6a36; /* Icon color on hover */
+  }
+  .custom-menu .ant-menu-item-selected {
+    background-color: #33333E; /* Your custom color */
+  }
