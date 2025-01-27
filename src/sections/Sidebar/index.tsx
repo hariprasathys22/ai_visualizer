@@ -10,6 +10,7 @@ import {
 import { RxExit } from "react-icons/rx";
 import { Menu, type MenuProps } from "antd";
 import { useQueryStore } from "../../store";
+import { useNavigate } from "react-router-dom";
 type MenuItem = Required<MenuProps>["items"][number];
 
 type SidebarProps = {
@@ -18,8 +19,10 @@ type SidebarProps = {
 };
 const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const { setHeading } = useQueryStore();
+  const navigate = useNavigate()
   const handleDashBoard = () => {
     setHeading("Dashboard");
+    navigate('/dashboard')
   };
   const handleAIChatHelper = () => {
     setHeading("AI Chat Helper");
