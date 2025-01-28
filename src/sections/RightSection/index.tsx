@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useQueryStore } from "../../../store";
-import { Pages } from "../../../routers";
+import { useQueryStore } from "../../store";
+import { Pages } from "../../routers";
 
 const RightSection = () => {
   const { heading } = useQueryStore();

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../../sections/Sidebar";
 import "./index.css";
-import RightSection from "../../sections/Sidebar/RightSection";
+import RightSection from "../../sections/RightSection";
 
 const Home:React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
