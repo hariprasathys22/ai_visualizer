@@ -26,9 +26,11 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   };
   const handleAIChatHelper = () => {
     setHeading("AI Chat Helper");
+    navigate("/chat")
   };
   const handleProjects = () => {
     setHeading("Projects");
+    navigate("/projects")
   };
   const handleSettings = () => {
     setHeading("Settings");
