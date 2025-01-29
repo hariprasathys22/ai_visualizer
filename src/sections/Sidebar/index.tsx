@@ -5,7 +5,7 @@ import {
   DesktopOutlined,
   MenuFoldOutlined,
   PieChartOutlined,
-  SettingOutlined,
+  SettingOutlined
 } from "@ant-design/icons";
 import { RxExit } from "react-icons/rx";
 import { Menu, type MenuProps } from "antd";
@@ -19,18 +19,18 @@ type SidebarProps = {
 };
 const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
   const { setHeading } = useQueryStore();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleDashBoard = () => {
     setHeading("Dashboard");
-    navigate('/dashboard')
+    navigate("/dashboard");
   };
   const handleAIChatHelper = () => {
     setHeading("AI Chat Helper");
-    navigate("/chat")
+    navigate("/chat");
   };
   const handleProjects = () => {
     setHeading("Projects");
-    navigate("/projects")
+    navigate("/projects");
   };
   const handleSettings = () => {
     setHeading("Settings");
@@ -40,26 +40,26 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
       key: "1",
       icon: <PieChartOutlined />,
       label: "Dashboard",
-      onClick: handleDashBoard,
+      onClick: handleDashBoard
     },
     {
       key: "2",
       icon: <DesktopOutlined />,
       label: "AI Chat Helper",
-      onClick: handleAIChatHelper,
+      onClick: handleAIChatHelper
     },
     {
       key: "3",
       icon: <AppstoreOutlined />,
       label: "Projects",
-      onClick: handleProjects,
+      onClick: handleProjects
     },
     {
       key: "4",
       icon: <SettingOutlined />,
       label: "Settings",
-      onClick: handleSettings,
-    },
+      onClick: handleSettings
+    }
 
     // {
     //   key: "sub2",
@@ -118,7 +118,7 @@ const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
               style={{
                 background: "transparent",
                 width: collapsed ? "50px" : "100%",
-                marginTop: "5px",
+                marginTop: "5px"
               }}
               theme="dark"
               inlineCollapsed={collapsed}
