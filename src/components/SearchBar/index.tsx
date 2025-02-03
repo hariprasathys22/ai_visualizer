@@ -32,7 +32,7 @@ const SearchBar = () => {
         New Project
       </Button>
         <ModalWindow open={openProject} onClose={handleClose}>
-          <NewProject />
+          <NewProject setOpenProject = {setOpenProject} />
         </ModalWindow>
       
     </div>

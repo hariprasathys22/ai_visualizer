@@ -20,7 +20,7 @@ interface ProjectContent {
 }
 const ProjectTable = () => {
   const [projects, setProjects]: any = useState([]);
-  const [AllProjects, setAllProjects]: any = useState([]);
+  const [AllProjects, setAllProjects] = useState<ProjectContent[]>([]);
   const tableHeader = [
     "Name",
     "Status",
@@ -42,46 +42,55 @@ const ProjectTable = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setProjects(data.result);
+      setProjects(data.result.map((proj: { name: string }) => proj.name));
     } catch (e) {
       console.error(e);
     }
   };
 
   const fetchAProject = async () => {
-    let allProject: ProjectContent[] = [];
     try {
-      if (projects.length > 0) {
-        for (let i = 0; i < projects.length - 1; i++) {
-          const response = await fetch(
-            `http://localhost:5000/api/collection/listACollection/${projects[i].name}`,
-            {
-              method: "GET",
-            }
-          );
-          const data = await response.json();
-          allProject[i] = {
-            name: projects[i].name,
-            status: data.result.status,
-            points: data.result.points_count,
-            size: data.result.config.params.vectors.size
-          };
-        }
-      }
-      setAllProjects(allProject);
+      if (projects.length === 0) return;
+
+      const projectDetails = await Promise.all(
+        projects.map(async (name: any) => {
+          try {
+            const response = await fetch(
+              `http://localhost:5000/api/collection/listACollection/${name}`
+            );
+            if (!response.ok) throw new Error(`Failed to fetch ${name}`);
+
+            const data = await response.json();
+            return {
+              name,
+              status: data.result.status,
+              points: data.result.points_count,
+              size: data.result.config.params.vectors.size,
+            };
+          } catch (error) {
+            console.error(error);
+            return null;
+          }
+        })
+      );
+
+      setAllProjects(projectDetails.filter((p) => p !== null));
     } catch (e) {
       console.error(e);
     }
   };
-
   useEffect(() => {
     fetchProject();
+  }, []);
+
+  // Fetch project details when projects update
+  useEffect(() => {
     fetchAProject();
-  }, [fetchProject]);
+  }, [projects]);
   return (
-    <div className="w-full">
+    <div className="w-full h-full relative">
       <TableContainer
-        sx={{  borderRadius: "5px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;"  }}
+        sx={{  borderRadius: "5px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;", height: "320px",  }}
       >
         <Table aria-label="simple table">
           <TableHead>
@@ -103,8 +112,8 @@ const ProjectTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {AllProjects ? (
-              AllProjects.map((project: ProjectContent, index: number) => (
+            {AllProjects.length > 0  ? (
+              AllProjects.map((project: any, index: number) => (
                 <TableRow key={`project-${index + 1}`} sx={{backgroundColor: "#f8f8f8"}}>
                   <TableCell align="center" sx={{borderRight: "1px solid #e4e4e4",}}>{project.name}</TableCell>
                   <TableCell align="center"

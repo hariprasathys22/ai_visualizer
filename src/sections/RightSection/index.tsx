@@ -9,7 +9,7 @@ const RightSection = () => {
       <div className="w-full md:h-[55px] shadow-md rounded-t-3xl flex items-center">
         <p className="font-semibold text-lg ml-6">{heading}</p>
       </div>
-      <div>
+      <div className="w-full ">
         <Routes>
           {Pages.map(({ component, path }) => (
             <Route path={path} element={component}></Route>
