@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
+import { useQueryStore } from "../../store";
 interface ProjectDetails {
   name: string;
 }
@@ -21,6 +22,7 @@ interface ProjectContent {
 const ProjectTable = () => {
   const [projects, setProjects]: any = useState([]);
   const [AllProjects, setAllProjects] = useState<ProjectContent[]>([]);
+  const { setProjectName } = useQueryStore()
   const tableHeader = [
     "Name",
     "Status",
@@ -83,6 +85,10 @@ const ProjectTable = () => {
     fetchProject();
   }, []);
 
+  const handleProjectData = (project : any) => {
+    setProjectName(project)
+    
+  }
   // Fetch project details when projects update
   useEffect(() => {
     fetchAProject();
@@ -90,14 +96,18 @@ const ProjectTable = () => {
   return (
     <div className="w-full h-full relative">
       <TableContainer
-        sx={{  borderRadius: "5px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;", height: "320px",  }}
+        sx={{
+          borderRadius: "5px",
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;",
+          height: "320px",
+        }}
       >
         <Table aria-label="simple table">
           <TableHead>
             <TableRow sx={{ background: "#ef6a36" }}>
               {tableHeader.map((head, index) => (
                 <TableCell
-                align="center"
+                  align="center"
                   key={`key-${index + 1}`}
                   sx={{
                     borderRight: "1px solid #e4e4e4",
@@ -112,18 +122,44 @@ const ProjectTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {AllProjects.length > 0  ? (
+            {AllProjects.length > 0 ? (
               AllProjects.map((project: any, index: number) => (
-                <TableRow key={`project-${index + 1}`} sx={{backgroundColor: "#f8f8f8"}}>
-                  <TableCell align="center" sx={{borderRight: "1px solid #e4e4e4",}}>{project.name}</TableCell>
-                  <TableCell align="center"
-                    sx={{ display: "flex", alignItems: "center", justifyContent: "center",  gap: "10px", borderRight: "1px solid #e4e4e4" }}
+                <TableRow
+                  key={`project-${index + 1}`}
+                  sx={{ backgroundColor: "#f8f8f8" }}
+                >
+                  <TableCell
+                    align="center"
+                    sx={{ borderRight: "1px solid #e4e4e4" }}
+                  >
+
+                    <button className="cursor-pointer" onClick={(event : any) => handleProjectData(event.target.innerHTML)}>{project.name}</button>
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "10px",
+                      borderRight: "1px solid #e4e4e4",
+                    }}
                   >
                     <GoDotFill style={{ color: `${project.status}` }} />{" "}
                     {project.status}
                   </TableCell>
-                  <TableCell align="center" sx={{borderRight: "1px solid #e4e4e4",}}>{project.points}</TableCell>
-                  <TableCell align="center" sx={{borderRight: "1px solid #e4e4e4",}}>{project.size}</TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ borderRight: "1px solid #e4e4e4" }}
+                  >
+                    {project.points}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ borderRight: "1px solid #e4e4e4" }}
+                  >
+                    {project.size}
+                  </TableCell>
                   <TableCell align="center">Delete</TableCell>
                 </TableRow>
               ))
