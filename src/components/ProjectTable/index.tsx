@@ -9,6 +9,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { useQueryStore } from "../../store";
+import { useNavigate } from "react-router-dom";
+import { ServerConfig } from "../../utilities/baseConfig";
 interface ProjectDetails {
   name: string;
 }
@@ -22,7 +24,9 @@ interface ProjectContent {
 const ProjectTable = () => {
   const [projects, setProjects]: any = useState([]);
   const [AllProjects, setAllProjects] = useState<ProjectContent[]>([]);
-  const { setProjectName } = useQueryStore()
+  const { setProjectName, projectName } = useQueryStore()
+  const navigate = useNavigate()
+
   const tableHeader = [
     "Name",
     "Status",
@@ -34,7 +38,7 @@ const ProjectTable = () => {
   const fetchProject = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/collection/listCollections",
+        `${ServerConfig.BASE_URL}api/collection/listCollections`,
         {
           method: "GET",
         }
@@ -58,7 +62,7 @@ const ProjectTable = () => {
         projects.map(async (name: any) => {
           try {
             const response = await fetch(
-              `http://localhost:5000/api/collection/listACollection/${name}`
+              `${ServerConfig.BASE_URL}api/collection/listACollection/${name}`
             );
             if (!response.ok) throw new Error(`Failed to fetch ${name}`);
 
@@ -87,6 +91,7 @@ const ProjectTable = () => {
 
   const handleProjectData = (project : any) => {
     setProjectName(project)
+    navigate(`/projects/${project}`)
     
   }
   // Fetch project details when projects update

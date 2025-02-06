@@ -1,5 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { ServerConfig } from "../../utilities/baseConfig";
 interface NewProject{
   setOpenProject: (openProject: boolean)=> void;
 }
@@ -10,7 +11,7 @@ const NewProject = ({setOpenProject}:NewProject) => {
     console.log(projectName);
     
     try{
-      const response = await fetch("http://localhost:5000/api/collection/addCollection", {
+      const response = await fetch(`${ServerConfig.BASE_URL}api/collection/addCollection`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"  // Add this header

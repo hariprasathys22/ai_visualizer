@@ -3,16 +3,16 @@ import { useQueryStore } from "../../store";
 import { Pages } from "../../routers";
 
 const RightSection = () => {
-  const { heading } = useQueryStore();
+  const { heading, projectName } = useQueryStore();
   return (
     <div className="w-full h-full bg-white rounded-3xl shadow-md ">
       <div className="w-full md:h-[55px] shadow-md rounded-t-3xl flex items-center">
-        <p className="font-semibold text-lg ml-6">{heading}</p>
+        <p className="font-semibold text-lg ml-6">{ !projectName ? heading : projectName}</p>
       </div>
       <div className="w-full ">
         <Routes>
           {Pages.map(({ component, path }) => (
-            <Route path={path} element={component}></Route>
+            <Route path={path} element={component} />
           ))}
         </Routes>
       </div>

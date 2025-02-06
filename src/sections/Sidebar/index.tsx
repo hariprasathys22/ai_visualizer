@@ -18,21 +18,25 @@ type SidebarProps = {
   setCollapsed: (collapsed: boolean) => void;
 };
 const Sidebar = ({ collapsed, setCollapsed }: SidebarProps) => {
-  const { setHeading } = useQueryStore();
+  const { setHeading, setProjectName } = useQueryStore();
   const navigate = useNavigate();
   const handleDashBoard = () => {
     setHeading("Dashboard");
+    setProjectName("")
     navigate("/dashboard");
   };
   const handleAIChatHelper = () => {
     setHeading("AI Chat Helper");
+    setProjectName("")
     navigate("/chat");
   };
   const handleProjects = () => {
     setHeading("Projects");
+    setProjectName("")
     navigate("/projects");
   };
   const handleSettings = () => {
+    setProjectName("")
     setHeading("Settings");
   };
   const items: MenuItem[] = [
