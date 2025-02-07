@@ -3,11 +3,12 @@ import { ServerConfig } from "../../utilities/baseConfig";
 import { useQueryStore } from "../../store";
 import DropDownComponent from "../../components/DropDown";
 import { SelectChangeEvent } from "@mui/material";
+import VectorContent from "../../components/VectorContent";
 
 const ProjectSection = () => {
   const [datas, setDatas] = useState<string[]>([]);
   const { projectName } = useQueryStore();
-  const [changeCategory, setChangeCategory] = useState("");
+  const [changeCategory, setChangeCategory] = useState("All");
   const fetchVectorByCollection = async () => {
     try {
       const response = await fetch(
@@ -35,10 +36,11 @@ const ProjectSection = () => {
     fetchVectorByCollection();
     console.log(datas, "query data");
   }, []);
+  
 
   return (
-    <div className="w-full h-full p-4">
-      <div className="w-1/4 p-2">
+    <div className="w-full h-full p-4 relative">
+      <div className="w-1/4 px-6 py-4">
         <DropDownComponent
           handleChange={handleChange}
           content={categorySelect}
@@ -46,6 +48,10 @@ const ProjectSection = () => {
           label="Select Category"
         />
       </div>
+      <div className="w-full">
+        <VectorContent datas={datas} changeCategory={changeCategory} />
+      </div>
+      
     </div>
   );
 };
