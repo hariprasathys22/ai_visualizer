@@ -23,6 +23,11 @@ const PayloadSection = () => {
     }));
   };
 
+  const handleSubmit = () => {
+    const formattedPayload = Object.values(payload).reduce
+
+  }
+  
   return (
     <div className="w-full">
       <div className="w-full relative flex justify-between items-center">
