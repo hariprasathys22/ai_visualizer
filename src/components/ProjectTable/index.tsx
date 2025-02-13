@@ -22,9 +22,8 @@ interface ProjectContent {
   size: number;
 }
 const ProjectTable = () => {
-  const [projects, setProjects]: any = useState([]);
   const [AllProjects, setAllProjects] = useState<ProjectContent[]>([]);
-  const { setProjectName, projectName } = useQueryStore()
+  const { setProjectName, projectName, projects, setProjects, fetchProject } = useQueryStore()
   const navigate = useNavigate()
 
   const tableHeader = [
@@ -34,25 +33,6 @@ const ProjectTable = () => {
     "Size of embedding",
     "Actions",
   ];
-
-  const fetchProject = async () => {
-    try {
-      const response = await fetch(
-        `${ServerConfig.BASE_URL}api/collection/listCollections`,
-        {
-          method: "GET",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setProjects(data.result.map((proj: { name: string }) => proj.name));
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const fetchAProject = async () => {
     try {

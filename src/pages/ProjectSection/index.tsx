@@ -31,6 +31,7 @@ const ProjectSection = () => {
     datas.length > 0
       ? ["All", ...new Set(datas.map((data: any) => data.payload.category))]
       : [];
+      
   const handleChange = (event: any) => {
     setChangeCategory(event.target.value);
   };
