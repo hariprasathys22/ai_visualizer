@@ -12,16 +12,17 @@ export interface VectorContentId {
 
 const VectorContent: React.FC<any> = ({ datas, changeCategory }) => {
   let newData;
-    console.log(changeCategory, "change");
-    
-  if(changeCategory === "All"){
-    newData = datas
-  }else{
-    newData = datas.filter((data: any) => changeCategory === data.payload.category)
+  console.log(changeCategory, "change");
+
+  if (changeCategory === "All") {
+    newData = datas;
+  } else {
+    newData = datas.filter(
+      (data: any) => changeCategory === data.payload.category
+    );
     console.log(newData, "djhjhdjdj");
-    
   }
-  
+
   return (
     <div className="w-full h-full p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {newData.map((data: any, index: number) => (

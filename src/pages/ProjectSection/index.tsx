@@ -62,7 +62,7 @@ const ProjectSection = () => {
         <VectorContent datas={datas} changeCategory={changeCategory} />
       </div>
       <ModalWindow open={openAddDetails} onClose={handleClose}>
-          <PayloadSection />
+          <PayloadSection setOpenAddDetails={setOpenAddDetails} />
       </ModalWindow>
     </div>
   );
