@@ -4,12 +4,15 @@ import { GoArrowRight } from "react-icons/go";
 import { useQueryStore } from "../../store";
 import DropDownComponent from "../../components/DropDown";
 import { ServerConfig } from "../../utilities/baseConfig";
+import ModalWindow from "../../components/ModalComponent";
+import ChatName from "../../sections/ChatName";
 
 const ChatHelper = () => {
   const [queryData, setQueryData] = useState("");
   const [dropDownProject, setDropDownProject] = useState("");
   const [queryInput, setQueryInput] = useState("");
   const { fetchProject, projects } = useQueryStore();
+  const [openAddDetails, setOpenAddDetails] = useState<boolean>(false);
 
   const handleQueryChange = (e: any) => {
     setQueryInput(e.target.value);
@@ -19,23 +22,25 @@ const ChatHelper = () => {
     setDropDownProject(event.target.value);
   };
   const fetchChatHistory = async () => {
-    try{
-
-      const response = await fetch(`${ServerConfig.BASE_URL}api/collection/retrieveAllVectors/chatHistory`, {
-        method: "GET", 
-        headers: {
-          "Content-Type": "application/json", // Add this header
+    try {
+      const response = await fetch(
+        `${ServerConfig.BASE_URL}api/collection/retrieveAllVectors/chatHistory`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json", // Add this header
+          },
         }
-      })
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
       console.log(data, "chat history");
-    }catch(e){
+    } catch (e) {
       console.error(e, "error fetching chat history");
     }
-  }
+  };
   const fetchQueryResponse = async () => {
     const response = await fetch(
       `${ServerConfig.BASE_URL}api/querytext/${dropDownProject}`,
@@ -53,8 +58,14 @@ const ChatHelper = () => {
       console.log(data);
     }
   };
+  const handleOpen = () => {
+    setOpenAddDetails(true);
+  };
+  const handleClose = () => {
+    setOpenAddDetails(false);
+  };
   useEffect(() => {
-    fetchChatHistory()
+    fetchChatHistory();
   }, []);
   useEffect(() => {
     fetchProject();
@@ -67,6 +78,7 @@ const ChatHelper = () => {
           <button
             type="button"
             className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm w-full cursor-pointer py-2.5 text-center me-2 mb-2"
+            onClick={handleOpen}
           >
             New Chat
           </button>
@@ -116,6 +128,9 @@ const ChatHelper = () => {
           </div>
         </div>
       </div>
+      <ModalWindow open={openAddDetails} onClose={handleClose}>
+        <ChatName setOpenAddDetails = {setOpenAddDetails} />
+      </ModalWindow>
     </div>
   );
 };
