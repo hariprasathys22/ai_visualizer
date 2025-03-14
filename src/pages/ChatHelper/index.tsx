@@ -1,4 +1,4 @@
-import { IconButton, TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { GoArrowRight } from "react-icons/go";
 import { useQueryStore } from "../../store";
@@ -13,6 +13,9 @@ const ChatHelper = () => {
   const [queryInput, setQueryInput] = useState("");
   const { fetchProject, projects } = useQueryStore();
   const [openAddDetails, setOpenAddDetails] = useState<boolean>(false);
+  const [chatNames, setChatNames] = useState<any[]>([]);
+  const [chatId, setChatId] = useState();
+  const [chatDetails, setChatDetails] = useState();
 
   const handleQueryChange = (e: any) => {
     setQueryInput(e.target.value);
@@ -36,10 +39,14 @@ const ChatHelper = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log(data, "chat history");
+      setChatNames(data.result.points);
     } catch (e) {
       console.error(e, "error fetching chat history");
     }
+  };
+  const fetchSingleChatDetails = async () => {
+    
+
   };
   const fetchQueryResponse = async () => {
     const response = await fetch(
@@ -64,12 +71,34 @@ const ChatHelper = () => {
   const handleClose = () => {
     setOpenAddDetails(false);
   };
+  const handleChatClick = async (chat: any) => {
+    console.log(chat.id);
+    
+    const response = await fetch(
+      `${ServerConfig.BASE_URL}api/collection/chatHistory/queryResponse/${chat.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json", // Add this header
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    console.log(data, "data ");
+    
+  };
   useEffect(() => {
     fetchChatHistory();
   }, []);
   useEffect(() => {
     fetchProject();
   }, []);
+  useEffect(() => {
+    console.log(chatNames, "chat names");
+  }, [chatNames]);
 
   return (
     <div className="w-full h-full flex">
@@ -82,6 +111,20 @@ const ChatHelper = () => {
           >
             New Chat
           </button>
+        </div>
+        <div className="w-full h-full overflow-y-auto">
+          {chatNames &&
+            chatNames.map((chat, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                className="w-full"
+                onClick={() => handleChatClick(chat)}
+                sx={{ marginTop: "10px", bgcolor: "#24252d", color: "#ffffff" }}
+              >
+                <span>{chat.payload.chatName}</span>
+              </Button>
+            ))}
         </div>
       </div>
       <div className="w-full p-4 ">
@@ -129,7 +172,10 @@ const ChatHelper = () => {
         </div>
       </div>
       <ModalWindow open={openAddDetails} onClose={handleClose}>
-        <ChatName setOpenAddDetails = {setOpenAddDetails} />
+        <ChatName
+          setOpenAddDetails={setOpenAddDetails}
+          fetchChatHistory={fetchChatHistory}
+        />
       </ModalWindow>
     </div>
   );
