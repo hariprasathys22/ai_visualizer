@@ -56,7 +56,7 @@ const ChatHelper = () => {
         headers: {
           "Content-Type": "application/json", // Add this header
         },
-        body: JSON.stringify({ query: queryInput }),
+        body: JSON.stringify({ query: queryInput, chatId: chatId }),
       }
     );
     const data = await response.json();
@@ -72,8 +72,7 @@ const ChatHelper = () => {
     setOpenAddDetails(false);
   };
   const handleChatClick = async (chat: any) => {
-    console.log(chat.id);
-    
+    setChatId(chat.id)
     const response = await fetch(
       `${ServerConfig.BASE_URL}api/collection/chatHistory/queryResponse/${chat.id}`,
       {
