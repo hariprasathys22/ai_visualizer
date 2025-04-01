@@ -3,15 +3,19 @@ import { ServerConfig } from "../../utilities/baseConfig";
 import { useQueryStore } from "../../store";
 import DropDownComponent from "../../components/DropDown";
 import VectorContent from "../../components/VectorContent";
-import { Button } from "@mui/material";
+import { Button, CircularProgress, Input } from "@mui/material";
 import ModalWindow from "../../components/ModalComponent";
 import PayloadSection from "../../sections/PayloadSection";
 
 const ProjectSection = () => {
   const [datas, setDatas] = useState<string[]>([]);
-  const [openAddDetails, setOpenAddDetails] = useState<boolean>(false)
+  const [openAddDetails, setOpenAddDetails] = useState<boolean>(false);
   const { projectName } = useQueryStore();
   const [changeCategory, setChangeCategory] = useState("All");
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const fetchVectorByCollection = async () => {
     try {
       const response = await fetch(
@@ -31,7 +35,7 @@ const ProjectSection = () => {
     datas.length > 0
       ? ["All", ...new Set(datas.map((data: any) => data.payload.category))]
       : [];
-      
+
   const handleChange = (event: any) => {
     setChangeCategory(event.target.value);
   };
@@ -41,6 +45,39 @@ const ProjectSection = () => {
   const handleOpen = () => {
     setOpenAddDetails(true);
   };
+  const handleExcelChange = async (event:any) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setFile(file.name);
+      setError(null);
+      setSuccessMessage(null);
+
+      // Auto-upload the file once selected
+      const formData = new FormData();
+      formData.append('excelFile', file);
+
+      setLoading(true);
+      try {
+        const response = await fetch(`${ServerConfig.BASE_URL}api/uploadExcel/${projectName}`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
+        const result = await response.json();
+        setSuccessMessage(result.message);
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while uploading the file');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handlePDFUpload = () => {};
   useEffect(() => {
     fetchVectorByCollection();
     console.log(datas, "query data");
@@ -57,13 +94,39 @@ const ProjectSection = () => {
             label="Select Category"
           />
         </div>
-        <Button variant="contained" onClick={handleOpen}>Add Data</Button>
+        {loading && <CircularProgress sx={{ mt: 2 }} />}
+        <div className="flex gap-4">
+          <Button variant="contained" onClick={handleOpen}>
+            Add Data
+          </Button>
+          <div>
+            <Input
+              type="file"
+              onChange={handleExcelChange}
+              sx={{
+                display: "none", // Hide the default file input
+              }}
+              id="file-input"
+            />
+
+            {/* Button that triggers the file input */}
+            <label htmlFor="file-input">
+              <Button variant="contained" component="span" >
+                Upload Excel
+              </Button>
+            </label>
+          </div>
+
+          <Button variant="contained" onClick={handlePDFUpload}>
+            Upload PDF
+          </Button>
+        </div>
       </div>
       <div className="w-full">
         <VectorContent datas={datas} changeCategory={changeCategory} />
       </div>
       <ModalWindow open={openAddDetails} onClose={handleClose}>
-          <PayloadSection setOpenAddDetails={setOpenAddDetails} />
+        <PayloadSection setOpenAddDetails={setOpenAddDetails} />
       </ModalWindow>
     </div>
   );
