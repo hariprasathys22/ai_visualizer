@@ -12,7 +12,8 @@ const ProjectSection = () => {
   const [openAddDetails, setOpenAddDetails] = useState<boolean>(false);
   const { projectName } = useQueryStore();
   const [changeCategory, setChangeCategory] = useState("All");
-  const [file, setFile] = useState<File | null>(null);
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -48,7 +49,7 @@ const ProjectSection = () => {
   const handleExcelChange = async (event:any) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      setFile(file.name);
+      setExcelFile(file);
       setError(null);
       setSuccessMessage(null);
 
@@ -76,8 +77,37 @@ const ProjectSection = () => {
       }
     }
   };
+  const handlePdfChange = async (event:any) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setPdfFile(file);
+      setError(null);
+      setSuccessMessage(null);
 
-  const handlePDFUpload = () => {};
+      // Auto-upload the file once selected
+      const formData = new FormData();
+      formData.append('pdfFile', file);
+
+      setLoading(true);
+      try {
+        const response = await fetch(`${ServerConfig.BASE_URL}api/uploadPdf/${projectName}`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
+        const result = await response.json();
+        setSuccessMessage(result.message);
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while uploading the file');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
   useEffect(() => {
     fetchVectorByCollection();
     console.log(datas, "query data");
@@ -116,13 +146,26 @@ const ProjectSection = () => {
               </Button>
             </label>
           </div>
+          <div>
+            <Input
+              type="file"
+              onChange={handlePdfChange}
+              sx={{
+                display: "none", // Hide the default file input
+              }}
+              id="file-pdf"
+            />
 
-          <Button variant="contained" onClick={handlePDFUpload}>
-            Upload PDF
-          </Button>
+            {/* Button that triggers the file input */}
+            <label htmlFor="file-pdf">
+              <Button variant="contained" component="span" >
+                Upload Pdf
+              </Button>
+            </label>
+          </div>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full h-auto ">
         <VectorContent datas={datas} changeCategory={changeCategory} />
       </div>
       <ModalWindow open={openAddDetails} onClose={handleClose}>
